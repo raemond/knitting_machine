@@ -256,8 +256,10 @@ class Disk():
             filename =  'file-%02d.dat' % filenum
             # we wrote an odd sector, so create the
             # associated file
+
             fn1 = os.path.join(self.filespath, '%02d.dat' % (psn-1))
             fn2 = os.path.join(self.filespath, '%02d.dat' % psn)
+            
             outfn =  os.path.join(self.filespath, filename)
             cmd = 'cat %s %s > %s' % (fn1, fn2, outfn)
             os.system(cmd)
@@ -446,8 +448,12 @@ class PDDemulator():
         elif cmd == 'M':
             # apparently not used by brother knitting machine
             print 'FDC Change Modes'
-            raise
+            # raise - KB: its used by the PDD!
             # following parameter - 0=FDC, 1=Operating
+            inc = self.readchar()
+            # print 'inc = %d' % inc
+            self.handleFDCmodeRequest(inc)
+            # here's hoping!
 
         elif cmd == 'D':
             # apparently not used by brother knitting machine

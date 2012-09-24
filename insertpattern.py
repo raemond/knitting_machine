@@ -171,7 +171,7 @@ for i in range (len(pattmemnibs) / 2):
 # now to insert this data into the file 
 
 # now we have to figure out the -end- of the last pattern is
-endaddr = 0x6df
+endaddr = 0x7edf
 
 beginaddr = thePattern["pattend"]
 endaddr = beginaddr + bytesForMemo(height) + len(pattmem)
@@ -184,8 +184,8 @@ print "beginning will be at ", hex(beginaddr), "end at", hex(endaddr)
 # attempt to use higher memories.
 # Steve
 
-if beginaddr <= 0x2B8:
-    print "sorry, this will collide with the pattern entry data since %s is <= 0x2B8!" % hex(beginaddr)
+if beginaddr < 0x2BC:
+    print "sorry, this will collide with the pattern entry data since %s is < 0x2BC!" % hex(beginaddr)
     #exit
 
 # write the memo and pattern entry from the -end- to the -beginning- (up!)
