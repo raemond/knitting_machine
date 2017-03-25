@@ -19,7 +19,7 @@
 
 import sys
 import brother
-import Image
+from PIL import Image
 import array
 
 TheImage = None
@@ -106,7 +106,7 @@ y = 0
 x = width - 1
 while x > 0:
     value = TheImage.getpixel((x,y))
-    if value:
+    if value[0] < 100 and value[1] < 100 and value[2] < 100:
         sys.stdout.write('* ')
     else:
         sys.stdout.write('  ')
@@ -133,7 +133,7 @@ for r in range(height):
     row = []  # we'll chunk in bits and then put em into nibbles
     for s in range(width):
         value = TheImage.getpixel((width-s-1,height-r-1))
-        if (value != 0):
+        if value[0] < 100 and value[1] < 100 and value[2] < 100:
             row.append(1)
         else:
             row.append(0)
@@ -184,8 +184,8 @@ print "beginning will be at ", hex(beginaddr), "end at", hex(endaddr)
 # attempt to use higher memories.
 # Steve
 
-if beginaddr <= 0x2B8:
-    print "sorry, this will collide with the pattern entry data since %s is <= 0x2B8!" % hex(beginaddr)
+if beginaddr < 0x2BC:
+    print "sorry, this will collide with the pattern entry data since %s is < 0x2BC!" % hex(beginaddr)
     #exit
 
 # write the memo and pattern entry from the -end- to the -beginning- (up!)
