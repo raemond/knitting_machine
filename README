@@ -1,10 +1,77 @@
+# Knitting Machine hack for the Brother KM-950i
+
+## Contents
+
+1. Introduction
+2. Instructions - Simple Two Colour
+3. Instructions - Multi Colour
+4. Developer Notes
+
+
+
+## 1. Introduction
+
+This python script is designed to convert image files to knitting patterns in a format that can be uploaded to a Brother KM-950i knitting machine.
+
+This work is a fork of the original hack for the Brother KM-930e by Adafruit. The KM-950i has special requirements that doesn't work for the KM-930e (namely it understands 32bit, not 16bit).
+
+
+
+## 2. Instructions - Simple Two Colour Patterns
+
+1. Copy the right sized blank directory into a new working directory
+cp -r blankPatterns/1/1/ myWorkingDirectory
+
+2. Copy your image into your working directory
+cp foobar/myImage.png myWorkingDirectory/
+
+3. Convert image to pattern
+python insertpattern.py myWorkDirectory/file-01.dat 901 myWorkDirectory/myImage.png myWorkDirectory/file-01.dat
+
+4. Convert pattern to tracks
+cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+
+5. Output result to check your work
+python dumppattern.py myWorkDirectory/file-01.dat 901
+
+6. Connect to knitting machine to upload (Note: you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M)
+python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
+
+
+
+## 3. Instructions - Multi Colour Patterns
+
+1. Copy the right sized blank directory into a new working directory
+Note: the height of the pattern will be the number of colours * the height of your image so make sure you pick up the right sized blank!
+cp -r blankPatterns/1/1/ myWorkingDirectory
+
+2. Copy your image into your working directory
+cp foobar/myImage.png myWorkingDirectory/
+
+3. Convert image to pattern - 
+Note: make you you change the '3' interger to the correct number of colors as this is used for validation
+python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat 
+
+4. Convert pattern to tracks
+cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+
+5. Output result to check your work
+python dumppattern.py myWorkDirectory/file-01.dat 901
+
+6. Connect to knitting machine to upload (Note: you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M)
+python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
+
+
+
+## 4. Developer Notes
+
 Please see the Changelog file for the latest changes
 
 These files are related to the Brother KH-930E knitting machine, and other similar models.
 
 === NOTE ===
 
-The emulator script was named PDDemulate-1.0.py, and the instructions in a lor of forums for using it have that name.
+The emulator script was named PDDemulate-1.0.py, and the instructions in a lot of forums for using it have that name.
 The script has been renamed, and is now simply PDDemulate.py.
 
 ============
