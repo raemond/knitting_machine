@@ -24,6 +24,7 @@ This work is a fork of the original hack for the Brother KM-930e by Adafruit. Th
 ```bash
 pil install pillow
 ```
+- In order to upload the patterns you generate here to your knitting machine you need to hack an FTDI cable. Instructions on how to do this can be found at https://learn.adafruit.com/electroknit/cable
 
 
 ## Instructions - Simple Two Colour Patterns
