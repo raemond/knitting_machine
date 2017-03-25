@@ -185,6 +185,7 @@ if patt == 0:
 else:
     print 'Searching for pattern number %d' % patt
     pats = bf.getPatterns(patt)
+    memo = bf.getPatternMemo(patt)
     if len(pats) == 0:
         print 'pattern %d not found' % patt
     else:
@@ -193,6 +194,7 @@ else:
         print '%3d Stitches, %3d Rows' % (stitches, rows)
         pattern = bf.getPattern(patt)
         for row in range(rows):
+            print memo[row],
             for stitch in range(stitches):
                 if(pattern[row][stitch]) == 0:
                     print ' ',
