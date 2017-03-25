@@ -72,7 +72,7 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 
 **Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120px wide then you want ```blankPatterns/2``` and 50px tall then you want subdirectory ```1/```. If you have an image that's 40px wide you want ```blankPatterns/1/``` and 310px tall then you want subdirectory ```3/```.
 
-**Note:** the height of the pattern will be the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
+**Note:** multi colour patterns a little more complicated than two colour. The height of multi patterns are the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
 
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
