@@ -127,6 +127,10 @@ class brotherFile(object):
         if self.verbose:
             print "* writing ", hex(b), "to", hex(index)
 
+        if len(dataarray) < index:
+            print "\n\n\nERROR: Not enough room to write to! \nCheck the width and height in multi.txt corresponds with the number of sheets in the blank pattern.\n"
+            exit()
+
         # this is the actual edit
         dataarray[index] = chr(b)
 
@@ -188,29 +192,52 @@ class brotherFile(object):
         idx = 0
         pptr = initPatternOffset
         for pi in range(1, 100):
-            flag = ord(self.data[idx])
+            header = []
+
+            next = self.data[idx]
+            header.append(next)
+            flag = ord(next)
             if self.verbose:
                 print 'Entry %d, flag is 0x%02X' % (pi, flag)
+
             idx = idx + 1
-            unknown = ord(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            unknown = ord(next)
+
             idx = idx + 1
-            rh, rt = nibbles(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            rh, rt = nibbles(next)
+
             idx = idx + 1
-            ro, sh = nibbles(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            ro, sh = nibbles(next)
+
             idx = idx + 1
-            st, so = nibbles(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            st, so = nibbles(next)
+
             idx = idx + 1
-            unk, ph = nibbles(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            mode, ph = nibbles(next)
+
             idx = idx + 1
-            pt, po = nibbles(self.data[idx])
+            next = self.data[idx]
+            header.append(next)
+            pt, po = nibbles(next)
             idx = idx + 1
+
             rows = hto(rh,rt,ro)
             stitches = hto(sh,st,so)
             patno = hto(ph,pt,po)
             # we have this entry
             if self.verbose:
                 print '   Pattern %3d: %3d Rows, %3d Stitches - ' % (patno, rows, stitches)
-                print 'Unk = %d, Unknown = 0x%02X (%d)' % (unk, unknown, unknown)
+                print 'Mode = %d, Unknown = 0x%02X (%d)' % (mode, unknown, unknown)
             if flag != 0:
                 # valid entry
                 memoff = pptr
@@ -226,9 +253,9 @@ class brotherFile(object):
                 #pptr = pptr - something
                 if patternNumber:
                     if patternNumber == patno:
-                        patlist.append({'number':patno, 'stitches':stitches, 'rows':rows, 'memo':memoff, 'pattern':patoff, 'pattend':pptr})
+                        patlist.append({'number':patno, 'mode':mode, 'stitches':stitches, 'rows':rows, 'memo':memoff, 'pattern':patoff, 'pattend':pptr, 'header':header})
                 else:
-                    patlist.append({'number':patno, 'stitches':stitches, 'rows':rows, 'memo':memoff, 'pattern':patoff, 'pattend':pptr})
+                    patlist.append({'number':patno, 'mode':mode, 'stitches':stitches, 'rows':rows, 'memo':memoff, 'pattern':patoff, 'pattend':pptr, 'header':header})
             else:
                 break
         return patlist
