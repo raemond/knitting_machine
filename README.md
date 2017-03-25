@@ -19,7 +19,10 @@ This work is a fork of the original hack for the Brother KM-930e by Adafruit. Th
 
 ## 2. Instructions - Simple Two Colour Patterns
 
-1. Copy the right sized blank directory into a new working directory
+1. Copy the right sized blank directory into a new working directory.
+
+**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120x50 then you want blankPatterns/2/1/. If you have an image that's 40x310 you want blankPatterns/1/3/
+
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
 ```
@@ -54,7 +57,10 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 ## 3. Instructions - Multi Colour Patterns
 
 1. Copy the right sized blank directory into a new working directory
-Note: the height of the pattern will be the number of colours * the height of your image so make sure you pick up the right sized blank!
+
+**Note:** the height of the pattern will be the number of colours * the height of your image so make sure you pick the right sized blank!
+**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120x50 then you want blankPatterns/2/1/. If you have an image that's 40x310 you want blankPatterns/1/3/
+
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
 ```
@@ -65,7 +71,9 @@ cp foobar/myImage.png myWorkingDirectory/
 ```
 
 3. Convert image to pattern - 
-Note: make you you change the '3' interger to the correct number of colors as this is used for validation
+
+**Note:** make you you change the '3' interger to the correct number of colors as this is used for validation.
+
 ```bash
 python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat 
 ```
