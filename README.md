@@ -20,22 +20,34 @@ This work is a fork of the original hack for the Brother KM-930e by Adafruit. Th
 ## 2. Instructions - Simple Two Colour Patterns
 
 1. Copy the right sized blank directory into a new working directory
+```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
+```
 
 2. Copy your image into your working directory
+```bash
 cp foobar/myImage.png myWorkingDirectory/
+```
 
 3. Convert image to pattern
+```bash
 python insertpattern.py myWorkDirectory/file-01.dat 901 myWorkDirectory/myImage.png myWorkDirectory/file-01.dat
+```
 
 4. Convert pattern to tracks
+```bash
 cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+```
 
 5. Output result to check your work
+```bash
 python dumppattern.py myWorkDirectory/file-01.dat 901
+```
 
 6. Connect to knitting machine to upload (Note: you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M)
+```bash
 python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
+```
 
 
 
@@ -43,24 +55,35 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 
 1. Copy the right sized blank directory into a new working directory
 Note: the height of the pattern will be the number of colours * the height of your image so make sure you pick up the right sized blank!
+```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
+```
 
 2. Copy your image into your working directory
+```bash
 cp foobar/myImage.png myWorkingDirectory/
+```
 
 3. Convert image to pattern - 
 Note: make you you change the '3' interger to the correct number of colors as this is used for validation
+```bash
 python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat 
+```
 
 4. Convert pattern to tracks
+```bash
 cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+```
 
 5. Output result to check your work
+```bash
 python dumppattern.py myWorkDirectory/file-01.dat 901
+```
 
 6. Connect to knitting machine to upload (Note: you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M)
+```bash
 python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
-
+```
 
 
 ## 4. Developer Notes
