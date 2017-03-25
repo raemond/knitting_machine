@@ -3,6 +3,7 @@
 ## Contents
 
 - Introduction
+- Dependencies
 - Instructions - Simple Two Colour
 - Instructions - Multi Colour
 - Developer Notes
@@ -17,11 +18,19 @@ This work is a fork of the original hack for the Brother KM-930e by Adafruit. Th
 
 
 
+## Dependencies
+
+- pillow (Python Image Library)
+```bash
+pil install pillow
+```
+
+
 ## Instructions - Simple Two Colour Patterns
 
 ### 1. Copy the right sized blank directory into a new working directory.
 
-**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120x50 then you want blankPatterns/2/1/. If you have an image that's 40x310 you want blankPatterns/1/3/
+**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120px wide then you want ```blankPatterns/2``` and 50px tall then you want subdirectory ```1/```. If you have an image that's 40px wide you want ```blankPatterns/1/``` and 310px tall then you want subdirectory ```3/```.
 
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
@@ -61,9 +70,9 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 
 ### 1. Copy the right sized blank directory into a new working directory.
 
-**Note:** the height of the pattern will be the number of colours * the height of your image so make sure you pick the right sized blank!
+**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120px wide then you want ```blankPatterns/2``` and 50px tall then you want subdirectory ```1/```. If you have an image that's 40px wide you want ```blankPatterns/1/``` and 310px tall then you want subdirectory ```3/```.
 
-**Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120x50 then you want blankPatterns/2/1/. If you have an image that's 40x310 you want blankPatterns/1/3/
+**Note:** the height of the pattern will be the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
 
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
