@@ -2,14 +2,14 @@
 
 ## Contents
 
-1. Introduction
-2. Instructions - Simple Two Colour
-3. Instructions - Multi Colour
-4. Developer Notes
+- Introduction
+- Instructions - Simple Two Colour
+- Instructions - Multi Colour
+- Developer Notes
 
 
 
-## 1. Introduction
+## Introduction
 
 This python script is designed to convert image files to knitting patterns in a format that can be uploaded to a Brother KM-950i knitting machine.
 
@@ -17,7 +17,7 @@ This work is a fork of the original hack for the Brother KM-930e by Adafruit. Th
 
 
 
-## 2. Instructions - Simple Two Colour Patterns
+## Instructions - Simple Two Colour Patterns
 
 ### 1. Copy the right sized blank directory into a new working directory.
 
@@ -57,7 +57,7 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 
 
 
-## 3. Instructions - Multi Colour Patterns
+## Instructions - Multi Colour Patterns
 
 ### 1. Copy the right sized blank directory into a new working directory.
 
@@ -101,7 +101,7 @@ python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
 ```
 
 
-## 4. Developer Notes
+## Developer Notes
 
 Please see the Changelog file for the latest changes
 
