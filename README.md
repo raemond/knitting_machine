@@ -43,17 +43,17 @@ cp foobar/myImage.png myWorkingDirectory/
 
 ### 3. Convert image to pattern
 ```bash
-python insertpattern.py myWorkDirectory/file-01.dat 901 myWorkDirectory/myImage.png myWorkDirectory/file-01.dat
+python insertpattern.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png myWorkingDirectory/file-01.dat
 ```
 
 ### 4. Convert pattern to tracks
 ```bash
-cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd myWorkingDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
 ```
 
 ### 5. Output result to check your work
 ```bash
-python dumppattern.py myWorkDirectory/file-01.dat 901
+python dumppattern.py myWorkingDirectory/file-01.dat 901
 ```
 
 ### 6. Connect to knitting machine to upload.
@@ -61,7 +61,7 @@ python dumppattern.py myWorkDirectory/file-01.dat 901
 **Note:** you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M
 
 ```bash
-python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
+python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
 ```
 
 
@@ -93,12 +93,12 @@ python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingD
 
 ### 4. Convert pattern to tracks.
 ```bash
-cd myWorkDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd myWorkingDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
 ```
 
 ### 5. Output result to check your work.
 ```bash
-python dumppattern.py myWorkDirectory/file-01.dat 901
+python dumppattern.py myWorkingDirectory/file-01.dat 901
 ```
 
 ### 6. Connect to knitting machine to upload.
@@ -106,7 +106,7 @@ python dumppattern.py myWorkDirectory/file-01.dat 901
 **Note:** you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M
 
 ```bash
-python PDDemulate.py myWorkDirectory/ /dev/cu.usbserial-A4WYNI7I
+python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
 ```
 
 
