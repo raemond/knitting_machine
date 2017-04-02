@@ -61,7 +61,7 @@ def bytesForMemo(rows):
 version = '1.0'
 
 if len(sys.argv) < 6:
-    print 'Usage: %s oldbrotherfile pattern# image.png numberofcolors newbrotherfile' % sys.argv[0]
+    print 'Usage: %s oldbrotherfile pattern# image.png numberofcolors newbrotherfile doubleHeight|offsetRows|blankSecondPass|ditheredRows' % sys.argv[0]
     sys.exit()
 
 bf = brother.brotherFile(sys.argv[1])
@@ -69,6 +69,9 @@ pattnum = sys.argv[2]
 imagefile = sys.argv[3]
 maxcolors = sys.argv[4]
 multifile = sys.argv[3]+'-multi.txt'
+patternalgorithm = 'offsetRows'
+if(len(sys.argv) == 7):
+    patternalgorithm = sys.argv[6]
 
 allPatterns = bf.getPatterns()
 
@@ -129,30 +132,176 @@ if len(colors) != int(maxcolors):
 
 # Now we have a int for each color, convert imagefile to multifile. 
 # Create this interum state because it allows you to alter the order of colors and lines by hand if you wish
-y = height-1
-colorInt = 0
-multiOutfile = open(multifile, 'wb')
 
-while y > -1:
+# These algorithms are benchmarked in my blog post xxxxx
+# Original algorithm - double height
+# Always do a line of knitting for every colour even if it's not present in the row (ensures the thickness of the knitting is consistent)
+def doubleHeight():
+    y = height-1
+    writeLine = ''
+    multiOutfile = open(multifile, 'wb')
+    while y > -1:
 
-    #print imageConvertLines[y]
-    # Always do a line of knitting for every colour even if it's not present in the row (ensures the thickness of the knitting is consistent)
-    z = 0
-    while z < len(colors):
-        multiOutfile.write(str(z+1)+'#')
-        x = 0
-        while x < width:
-            if imageConvertLines[y][x] == (z+1):
-                multiOutfile.write('1')
+        #print imageConvertLines[y]
+        z = 0
+
+        while z < len(colors):
+            writeLine = str(z+1)+'#'
+            x = 0
+
+            while x < width:
+                if imageConvertLines[y][x] == (z+1):
+                    writeLine = writeLine+'1'
+                else:
+                    writeLine = writeLine+'0'
+                x = x+1
+            multiOutfile.write(writeLine+'\n')
+
+            z = z+1
+        y = y-1
+    multiOutfile.close()
+
+
+# Alternative algorithm - offset
+# This uses the second pass of the last colour in a row as an opportunity to start the next row 
+# just like the KRC variation switch 7 on the knitting machine board
+def offsetRows():
+    y = height-1
+    writeLine = ''
+    write2ndLine = ''
+    r2l = False
+    knittedRow = 0
+
+    multiOutfile = open(multifile, 'wb')
+    currentColour = 0
+    while y > -1:
+
+        #print imageConvertLines[y]
+        z = 0
+        knittedRow = 0
+        while True:
+            writeLine = str(currentColour+1)+'#'
+            write2ndLine = writeLine
+
+            x = 0
+            while x < width:
+                if imageConvertLines[y][x] == (currentColour+1):
+                    writeLine = writeLine+'1'
+                    knittedRow = knittedRow+1
+                else:
+                    writeLine = writeLine+'0'
+                write2ndLine = write2ndLine+'0'
+                x = x+1
+            multiOutfile.write(writeLine+'\n')
+
+            z = z+1
+
+            if knittedRow == width: # finished this row, break before we go to the next colour and focus on the next row
+                r2l = not r2l
+                if not r2l:
+                    currentColour = currentColour+1
+                    if currentColour == len(colors):
+                        currentColour = 0
+                #multiOutfile.write('0# width! '+str(r2l)+'\n')
+                break
+
+            if not r2l:
+                multiOutfile.write(write2ndLine+'\n')
             else:
-                multiOutfile.write('0')
-            x = x+1
-        multiOutfile.write('\n')
-        z = z+1
+                r2l = False
 
-    y = y-1
+            currentColour = currentColour+1
+            if currentColour == len(colors):
+                currentColour = 0
+            if z == len(colors):
+                #multiOutfile.write('0# colors!\n')
+                break
 
-multiOutfile.close()
+        y = y-1
+
+    if r2l:
+        multiOutfile.write(write2ndLine+'\n')
+    multiOutfile.close()
+
+
+
+# Alternative algorithm - blank second pass
+# Don't knit the main bed when returning to the colour changer
+def blankSecondPass():
+    y = height-1
+    writeLine = ''
+    write2ndLine = ''
+    multiOutfile = open(multifile, 'wb')
+    while y > -1:
+
+        #print imageConvertLines[y]
+        z = 0
+        while z < len(colors):
+            writeLine = str(z+1)+'#'
+            write2ndLine = writeLine
+
+            x = 0
+            while x < width:
+                if imageConvertLines[y][x] == (z+1):
+                    writeLine = writeLine+'1'
+                else:
+                    writeLine = writeLine+'0'
+                write2ndLine = write2ndLine+'0'
+                x = x+1
+            multiOutfile.write(writeLine+'\n')
+            multiOutfile.write(write2ndLine+'\n')
+
+            z = z+1
+        y = y-1
+    multiOutfile.close()
+
+
+# Alternative algorithm - dithered
+# This breaks up the allocation of the colours to every second instance of the colour in the first pass then every other instance of the colour in the second pass
+def ditheredRows():
+    y = height-1
+    writeLine = ''
+    write2ndLine = ''
+    multiOutfile = open(multifile, 'wb')
+    while y > -1:
+
+        #print imageConvertLines[y]
+        z = 0
+        while z < len(colors):
+            writeLine = str(z+1)+'#'
+            write2ndLine = writeLine
+
+            x = 0
+            while x < width:
+                if imageConvertLines[y][x] == (z+1) and x%2 == 0:
+                    writeLine = writeLine+'1'
+                else:
+                    writeLine = writeLine+'0'
+
+                if imageConvertLines[y][x] == (z+1) and x%2 != 0:
+                    write2ndLine = write2ndLine+'1'
+                else:
+                    write2ndLine = write2ndLine+'0'
+                x = x+1
+            multiOutfile.write(writeLine+'\n')
+            multiOutfile.write(write2ndLine+'\n')
+
+            z = z+1
+        y = y-1
+    multiOutfile.close()
+
+
+
+if patternalgorithm == 'doubleHeight':
+    doubleHeight()
+elif patternalgorithm == 'offsetRows':
+    offsetRows()
+elif patternalgorithm == 'blankSecondPass':
+    blankSecondPass()
+elif patternalgorithm == 'ditheredRows':
+    ditheredRows()
+
+
 
 # find the program entry
 thePattern = None
@@ -175,9 +324,9 @@ colours = []
 
 # ok got a bank, now lets figure out how big this thing we want to insert is
 width = len(lines[0])-2 #2 chars used for memo data, that doesn't count toward the width of the pattern
-print "width:",width
+#print "width:",width
 height = len(lines)
-print "height:", height
+print "Pattern height:", height
 
 while x < height:
     colours.append(int(lines[x][0]))
@@ -199,7 +348,7 @@ memoentry = []
 r = 0
 for r in range(bytesForMemo(height)):
     if(r*2+1 < len(colours)):
-        print hex(colours[r*2 + 1] << 4 | colours[r*2])
+        #print hex(colours[r*2 + 1] << 4 | colours[r*2])
         memoentry.append(colours[r*2 + 1] << 4 | colours[r*2])
     r = r+1
 

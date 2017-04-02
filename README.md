@@ -73,7 +73,7 @@ python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
 
 **Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120px wide then you want ```blankPatterns/2``` and 50px tall then you want subdirectory ```1/```. If you have an image that's 40px wide you want ```blankPatterns/1/``` and 310px tall then you want subdirectory ```3/```.
 
-**Note:** multi colour patterns a little more complicated than two colour. The height of multi patterns are the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
+**Note:** multi colour patterns are a little more complicated than two colour. The height of multi patterns are the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
 
 ```bash
 cp -r blankPatterns/1/1/ myWorkingDirectory
@@ -86,10 +86,14 @@ cp foobar/myImage.png myWorkingDirectory/
 
 ### 3. Convert image to pattern.
 
-**Note:** make you you change the '3' interger to the correct number of colors as this is used for validation.
+**Note:** make sure you change the '3' interger to the correct number of colors as this is used for validation.
+
+**Note:** there are four different algorithms available to convert your image to a multi colour pattern: doubleHeight, offsetRows, blankSecondPass and ditheredRows. Please read this blog post which briefly introduces the four algorithms and provides a benchmark: http://heartofpluto.co/2017/04/02/algorithms-of-multi-coloured-knitting/
+
+By default offsetRows is chosen.
 
 ```bash
-python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat 
+python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat offsetRows
 ```
 
 ### 4. Convert pattern to tracks.
