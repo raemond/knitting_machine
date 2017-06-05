@@ -95,10 +95,6 @@ if (thePattern == None):
     print "Pattern #",pattnum,"not found!"
     exit(0)
 
-if (height != thePattern["rows"] or width != thePattern["stitches"]):
-    print "Pattern is the wrong size, the BMP is ",height,"x",width,"and the pattern is ",thePattern["rows"], "x", thePattern["stitches"]
-    exit(0)
-
 # debugging stuff here
 x = 0
 y = 0
@@ -176,6 +172,29 @@ endaddr = 0x6df
 beginaddr = thePattern["pattend"]
 endaddr = beginaddr + bytesForMemo(height) + len(pattmem)
 print "beginning will be at ", hex(beginaddr), "end at", hex(endaddr)
+
+for i in range(len(thePattern['header'])):
+    thePattern['header'][i] = ord(thePattern['header'][i])
+
+# we need to change the mode from 4 to 8 (this will turn off reading the mylar sheet as we knit!)
+thePattern['header'][5] = 8 << 4 | 9
+# and while we're here we should change the width and height too :)
+strHeight = "%03d" % height
+strWidth = "%03d" % width
+thePattern['header'][2] = int(strHeight[0]) << 4 | int(strHeight[1])
+thePattern['header'][3] = int(strHeight[2]) << 4 | int(strWidth[0])
+thePattern['header'][4] = int(strWidth[1]) << 4 | int(strWidth[2])
+
+# look at the header data
+print "New header:",
+for i in thePattern['header']:
+    print '0x%02X' % i,
+
+# write back the header
+seek = 0
+for i in range(len(thePattern['header'])):
+    bf.setIndexedByte(seek, thePattern['header'][i])
+    seek = seek + 1
 
 # Note - It's note certain that in all cases this collision test is needed. What's happening
 # when you write below this address (as the pattern grows downward in memory) in that you begin
