@@ -72,6 +72,9 @@ multifile = sys.argv[3]+'-multi.txt'
 patternalgorithm = 'offsetRows'
 if(len(sys.argv) == 7):
     patternalgorithm = sys.argv[6]
+skippatgen = False
+if(len(sys.argv) == 8):
+    skippatgen = True
 
 allPatterns = bf.getPatterns()
 
@@ -291,15 +294,15 @@ def ditheredRows():
     multiOutfile.close()
 
 
-
-if patternalgorithm == 'doubleHeight':
-    doubleHeight()
-elif patternalgorithm == 'offsetRows':
-    offsetRows()
-elif patternalgorithm == 'blankSecondPass':
-    blankSecondPass()
-elif patternalgorithm == 'ditheredRows':
-    ditheredRows()
+if not skippatgen:
+    if patternalgorithm == 'doubleHeight':
+        doubleHeight()
+    elif patternalgorithm == 'offsetRows':
+        offsetRows()
+    elif patternalgorithm == 'blankSecondPass':
+        blankSecondPass()
+    elif patternalgorithm == 'ditheredRows':
+        ditheredRows()
 
 
 
