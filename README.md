@@ -49,7 +49,7 @@ python insertpattern.py patterns/foobar/file-01.dat 901 patterns/foobar/myImage.
 
 ### 4. Convert pattern to tracks
 ```bash
-cd patterns/foobar/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd patterns/foobar/ && python ../../splitfile2track.py ./file-01.dat 2>&1 && cd ../../
 ```
 
 ### 5. Output result to check your work
@@ -98,7 +98,7 @@ python insertpatternMultiColour.py patterns/foobar/file-01.dat 901 patterns/foob
 
 ### 4. Convert pattern to tracks.
 ```bash
-cd patterns/foobar/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd patterns/foobar/ && python ../../splitfile2track.py ./file-01.dat 2>&1 && cd ../../
 ```
 
 ### 5. Output result to check your work
