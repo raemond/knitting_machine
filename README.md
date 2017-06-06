@@ -34,27 +34,27 @@ pil install pillow
 **Note:** each blank is 60 wide x 150 tall and the first level directories are the number of blanks wide, the second level is the number of blanks tall. So If you have an image that's 120px wide then you want ```blankPatterns/2``` and 50px tall then you want subdirectory ```1/```. If you have an image that's 40px wide you want ```blankPatterns/1/``` and 310px tall then you want subdirectory ```3/```.
 
 ```bash
-cp -r blankPatterns/1/1/ myWorkingDirectory
+cp -r blankPatterns/1/1/ patterns/foobar
 ```
 
 ### 2. Copy your image into your working directory
 ```bash
-cp foobar/myImage.png myWorkingDirectory/
+cp foobar/myImage.png patterns/foobar/
 ```
 
 ### 3. Convert image to pattern
 ```bash
-python insertpattern.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png myWorkingDirectory/file-01.dat
+python insertpattern.py patterns/foobar/file-01.dat 901 patterns/foobar/myImage.png patterns/foobar/file-01.dat
 ```
 
 ### 4. Convert pattern to tracks
 ```bash
-cd myWorkingDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd patterns/foobar/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
 ```
 
 ### 5. Output result to check your work
 ```bash
-python dumppattern.py myWorkingDirectory/file-01.dat 901
+python dumppattern.py patterns/foobar/file-01.dat 901
 ```
 
 ### 6. Connect to knitting machine to upload.
@@ -62,7 +62,7 @@ python dumppattern.py myWorkingDirectory/file-01.dat 901
 **Note:** you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M
 
 ```bash
-python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
+python PDDemulate.py patterns/foobar/ /dev/cu.usbserial-A4WYNI7I
 ```
 
 
@@ -76,12 +76,12 @@ python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
 **Note:** multi colour patterns are a little more complicated than two colour. The height of multi patterns are the number of colours * the height of your image. For example, if you have an image that's 40px tall and uses 4 colours, then the output pattern will actually be 160 rows tall so will need a subdirectory ```2/```.
 
 ```bash
-cp -r blankPatterns/1/1/ myWorkingDirectory
+cp -r blankPatterns/1/1/ patterns/foobar
 ```
 
 ### 2. Copy your image into your working directory.
 ```bash
-cp foobar/myImage.png myWorkingDirectory/
+cp foobar/myImage.png patterns/foobar/
 ```
 
 ### 3. Convert image to pattern.
@@ -93,17 +93,17 @@ cp foobar/myImage.png myWorkingDirectory/
 By default offsetRows is chosen.
 
 ```bash
-python insertpatternMultiColour.py myWorkingDirectory/file-01.dat 901 myWorkingDirectory/myImage.png 3 myWorkingDirectory/file-01.dat offsetRows
+python insertpatternMultiColour.py patterns/foobar/file-01.dat 901 patterns/foobar/myImage.png 3 patterns/foobar/file-01.dat offsetRows
 ```
 
 ### 4. Convert pattern to tracks.
 ```bash
-cd myWorkingDirectory/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
+cd patterns/foobar/ && python ../splitfile2track.py ./file-01.dat 2>&1 && cd ../
 ```
 
 ### 5. Output result to check your work
 ```bash
-python dumppattern.py myWorkingDirectory/file-01.dat 901
+python dumppattern.py patterns/foobar/file-01.dat 901
 ```
 
 ### 6. Connect to knitting machine to upload.
@@ -111,7 +111,7 @@ python dumppattern.py myWorkingDirectory/file-01.dat 901
 **Note:** you'll need to clear the memory on your knitting machine (command 888), then power cycle it, set it to load state (command 551), press 1 and M
 
 ```bash
-python PDDemulate.py myWorkingDirectory/ /dev/cu.usbserial-A4WYNI7I
+python PDDemulate.py patterns/foobar/ /dev/cu.usbserial-A4WYNI7I
 ```
 
 
