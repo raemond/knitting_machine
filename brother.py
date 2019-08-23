@@ -71,15 +71,15 @@ def roundfour(val):
 def nibblesPerRow(stitches):
     # there are four stitches per nibble
     # each row is nibble aligned
-    return(roundfour(stitches)/4)
+    return(roundfour(stitches)//4)
 
 def bytesPerPattern(stitches, rows):
     nibbs = rows * nibblesPerRow(stitches)
-    bytes = roundeven(nibbs)/2
+    bytes = roundeven(nibbs)//2
     return bytes
 
 def bytesForMemo(rows):
-    bytes = roundeven(rows)/2
+    bytes = roundeven(rows)//2
     return bytes
 
 def bytesPerPatternAndMemo(stitches, rows):
@@ -100,13 +100,13 @@ class brotherFile(object):
                 raise
                 #self.df = open(fn, 'w')
         except:
-            print 'Unable to open brother file <%s>' % fn
+            print('Unable to open brother file <%s>' % fn)
             raise
         try:
             self.data = self.df.read(32768)
             self.df.close()
         except:
-            print 'Unable to read 32768 bytes from file <%s>' % fn
+            print('Unable to read 32768 bytes from file <%s>' % fn)
             raise
         self.dfn = fn
         return
@@ -121,18 +121,31 @@ class brotherFile(object):
         # python strings are mutable so we
         # will convert the string to a char array, poke
         # and convert back
-        dataarray = array('c')
+        dataarray = array('B')
         dataarray.fromstring(self.data)
+        
+        #print('data type: ',type(self.data))
+        #dataarray = bytearray(self.data)
+        
+        #print(dataarray[0])
+        #print(dataarray[1])
+        #print(dataarray[2])
+        #print(b)
+        #print(type(b))
+        #print(index)
+        #print(type(index))
+        
+        index = int(index)
 
         if self.verbose:
-            print "* writing ", hex(b), "to", hex(index)
+            print("* writing ", hex(b), "to", hex(index))
 
         if len(dataarray) < index:
-            print "\n\n\nERROR: Not enough room to write to! \nCheck the width and height in multi.txt corresponds with the number of sheets in the blank pattern.\n"
+            print("\n\n\nERROR: Not enough room to write to! \nCheck the width and height in multi.txt corresponds with the number of sheets in the blank pattern.\n")
             exit()
 
         # this is the actual edit
-        dataarray[index] = chr(b)
+        dataarray[index] = b
 
         # save the new string. sure its not very memory-efficient
         # but who cares?
@@ -144,22 +157,41 @@ class brotherFile(object):
 
     def getIndexedNibble(self, offset, nibble):
         # nibbles is zero based
-        bytes = nibble/2
-	
-        m, l = nibbles(self.data[offset-bytes])
+        bytes = nibble//2
+        
+        #print('xxxx %d',bytes)
+        #print(type(self.data))
+        #print('offset=',offset,' bytes=',bytes)
+        
+        #print('DATA:', self.data[int(offset-bytes)], ' of type ',type(self.data[int(offset-bytes)]))
+        #print('CHAR=',chr(self.data[int(offset-bytes)]))
+
+        #m, l = nibbles(chr(self.data[int(offset-bytes)]))
+        #print(type(self.data[offset-bytes]))
+        #print(self.data[offset-bytes:offset-bytes+1])
+        m, l = nibbles(self.data[offset-bytes:offset-bytes+1]) # Will retrieve single byte in python2.7 and python3
+        #print('m=',"{0:b}".format(m))
+        #print('l=',"{0:b}".format(l))
         if nibble % 2:
             return m
         else:
             return l
 
     def getRowData(self, pattOffset, stitches, rownumber):
-	row=array('B')
+        row=array('B')
+        
         nibspr = nibblesPerRow(stitches)
+        #print('nibspr:',nibspr)
+        
         startnib = nibspr * rownumber
+        #print('startnib:',startnib)
+        
         endnib = startnib + nibspr
+        #print('endnib:',endnib)
 
         for i in range(startnib, endnib, 1):
             nib = self.getIndexedNibble(pattOffset, i)
+            #print("{0:b}".format(nib))
             row.append(nib & 0x01)
             stitches = stitches - 1
             if stitches:
@@ -194,39 +226,39 @@ class brotherFile(object):
         for pi in range(1, 100):
             header = []
 
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
-            flag = ord(next)
-            if self.verbose:
-                print 'Entry %d, flag is 0x%02X' % (pi, flag)
+            flag = next
+            #if self.verbose:
+            #    print('Entry %d, flag is 0x%02X' % (pi, flag))
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
-            unknown = ord(next)
+            unknown = next
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
             rh, rt = nibbles(next)
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
             ro, sh = nibbles(next)
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
             st, so = nibbles(next)
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
             mode, ph = nibbles(next)
 
             idx = idx + 1
-            next = self.data[idx]
+            next = chr(self.data[idx])
             header.append(next)
             pt, po = nibbles(next)
             idx = idx + 1
@@ -236,19 +268,19 @@ class brotherFile(object):
             patno = hto(ph,pt,po)
             # we have this entry
             if self.verbose:
-                print '   Pattern %3d: %3d Rows, %3d Stitches - ' % (patno, rows, stitches)
-                print 'Mode = %d, Unknown = 0x%02X (%d)' % (mode, unknown, unknown)
+                print('   Pattern %3d: %3d Rows, %3d Stitches - ' % (patno, rows, stitches))
+                print('Mode = %d, Unknown = 0x%02X (%d)' % (mode, ord(unknown), ord(unknown)))
             if flag != 0:
                 # valid entry
                 memoff = pptr
-                if self.verbose:
-                    print "Memo #",patno, "offset ", hex(memoff)
+                #if self.verbose:
+                #    print("Memo #",patno, "offset ", hex(memoff))
                 patoff = pptr -  bytesForMemo(rows)
-                if self.verbose:
-                     print "Pattern #",patno, "offset ", hex(patoff)
+                #if self.verbose:
+                     ####print("Pattern #",patno, "offset ", hex(patoff))
                 pptr = pptr - bytesPerPatternAndMemo(stitches, rows)
-                if self.verbose:
-                     print "Ending offset ", hex(pptr)
+                #if self.verbose:
+                #     print("Ending offset ", hex(pptr))
                 # TODO figure out how to calculate pattern length
                 #pptr = pptr - something
                 if patternNumber:
@@ -291,10 +323,10 @@ class brotherFile(object):
         memos = array('B')
         memoOff = list[0]['memo']
         rows = list[0]['rows']
-        memlen = roundeven(rows)/2
+        memlen = int(roundeven(rows)/2)
         # memo is padded to en even byte
         for i in range(memoOff, memoOff-memlen, -1):
-            msn, lsn = nibbles(self.data[i])
+            msn, lsn = nibbles(chr(self.data[i]))
             memos.append(lsn)
             rows = rows - 1
             if (rows):
@@ -316,12 +348,13 @@ class brotherFile(object):
         rows = list[0]['rows']
         stitches = list[0]['stitches']
 
-        #print 'patoff = 0x%04X' % patoff
-        #print 'rows = ', rows
-        #print 'stitches = ', stitches
+        print('patoff = 0x%04X' % int(patoff))
+        print('rows = ', rows)
+        print('stitches = ', stitches)
+        print('data[0]=',self.data[0],' of type ',type(self.data[0]))
         for i in range(0, rows):
             arow = self.getRowData(patoff, stitches, i)
-            #print arow
+            #print(':',arow,':')
             pattern.append(arow)
         return pattern
 

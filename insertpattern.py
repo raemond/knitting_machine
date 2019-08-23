@@ -44,15 +44,15 @@ def roundfour(val):
 def nibblesPerRow(stitches):
     # there are four stitches per nibble
     # each row is nibble aligned
-    return(roundfour(stitches)/4)
+    return(roundfour(stitches)//4)
 
 def bytesPerPattern(stitches, rows):
     nibbs = rows * nibblesPerRow(stitches)
-    bytes = roundeven(nibbs)/2
+    bytes = roundeven(nibbs)//2
     return bytes
 
 def bytesForMemo(rows):
-    bytes = roundeven(rows)/2
+    bytes = roundeven(rows)//2
     return bytes
 
 ##############
@@ -61,7 +61,7 @@ def bytesForMemo(rows):
 version = '1.0'
 
 if len(sys.argv) < 5:
-    print 'Usage: %s oldbrotherfile pattern# image.bmp newbrotherfile' % sys.argv[0]
+    print('Usage: %s oldbrotherfile pattern# image.bmp newbrotherfile' % sys.argv[0])
     sys.exit()
 
 
@@ -78,9 +78,9 @@ TheImage.load()
 
 im_size = TheImage.size
 width = im_size[0]
-print "width:",width
+print("width:",width)
 height = im_size[1]
-print "height:", height
+print("height:", height)
 
 
 
@@ -92,7 +92,7 @@ for pat in pats:
         #print "found it!"
         thePattern = pat
 if (thePattern == None):
-    print "Pattern #",pattnum,"not found!"
+    print("Pattern #",pattnum,"not found!")
     exit(0)
 
 # debugging stuff here
@@ -101,17 +101,20 @@ y = 0
 
 x = width - 1
 while x > 0:
+    #print('x: %d',x)
+    #print('y: %d',y)
     value = TheImage.getpixel((x,y))
-    if value[0] < 100 and value[1] < 100 and value[2] < 100:
-        sys.stdout.write('* ')
+    #if value[0] < 100 and value[1] < 100 and value[2] < 100:
+    if value > 0:
+        sys.stdout.write('X ')
     else:
-        sys.stdout.write('  ')
+        sys.stdout.write('- ')
     #sys.stdout.write(str(value))
     x = x-1
     if x == 0: #did we hit the end of the line?
         y = y+1
         x = width - 1
-        print " "
+        print(".")
         if y == height:
             break
 # debugging stuff done
@@ -120,7 +123,8 @@ while x > 0:
 
 # the memo seems to be always blank. i have no idea really
 memoentry = []
-for i in range(bytesForMemo(height)):
+#print('Height=',height)
+for i in range(int(bytesForMemo(height))):
     memoentry.append(0x0)
 
 # now for actual real live pattern data!
@@ -129,13 +133,14 @@ for r in range(height):
     row = []  # we'll chunk in bits and then put em into nibbles
     for s in range(width):
         value = TheImage.getpixel((width-s-1,height-r-1))
-        if value[0] < 100 and value[1] < 100 and value[2] < 100:
+        #if value[0] < 100 and value[1] < 100 and value[2] < 100:
+        if value > 0:
             row.append(1)
         else:
             row.append(0)
-    #print row
+    #print(row)
     # turn it into nibz
-    for s in range(roundfour(width) / 4):
+    for s in range(int(roundfour(width) // 4)):
         n = 0
         for nibs in range(4):
             #print "row size = ", len(row), "index = ",s*4+nibs
@@ -153,14 +158,17 @@ if (len(pattmemnibs) % 2):
     # odd nibbles, buffer to a byte
     pattmemnibs.append(0x0)
 
-#print len(pattmemnibs), "nibbles of data"
+#print(len(pattmemnibs), "nibbles of data")
 
 # turn into bytes
 pattmem = []
-for i in range (len(pattmemnibs) / 2):
+
+for i in range (round((len(pattmemnibs) // 2))):
+    temp = pattmemnibs[i*2] | (pattmemnibs[i*2 + 1] << 4)
+    #print("{0:b}".format(temp))
     pattmem.append( pattmemnibs[i*2] | (pattmemnibs[i*2 + 1] << 4))
 
-#print map(hex, pattmem)
+#print(map(hex, pattmem))
 # whew. 
 
 
@@ -171,7 +179,8 @@ endaddr = 0x6df
 
 beginaddr = thePattern["pattend"]
 endaddr = beginaddr + bytesForMemo(height) + len(pattmem)
-print "beginning will be at ", hex(beginaddr), "end at", hex(endaddr)
+
+print("beginning will be at ", hex(int(beginaddr)), "end at", hex(int(endaddr)))
 
 for i in range(len(thePattern['header'])):
     thePattern['header'][i] = ord(thePattern['header'][i])
@@ -186,9 +195,9 @@ thePattern['header'][3] = int(strHeight[2]) << 4 | int(strWidth[0])
 thePattern['header'][4] = int(strWidth[1]) << 4 | int(strWidth[2])
 
 # look at the header data
-print "New header:",
+print("New header:",)
 for i in thePattern['header']:
-    print '0x%02X' % i,
+    print('0x%02X' % i,)
 
 # write back the header
 seek = 0
@@ -204,7 +213,7 @@ for i in range(len(thePattern['header'])):
 # Steve
 
 if beginaddr < 0x2BC:
-    print "sorry, this will collide with the pattern entry data since %s is < 0x2BC!" % hex(beginaddr)
+    print("sorry, this will collide with the pattern entry data since %s is < 0x2BC!" % hex(beginaddr))
     #exit
 
 # write the memo and pattern entry from the -end- to the -beginning- (up!)
@@ -214,6 +223,7 @@ for i in range(len(memoentry)):
 
 for i in range(len(pattmem)):
     bf.setIndexedByte(endaddr, pattmem[i])
+    #print('pattmem=',pattmem[i])
     endaddr -= 1
 
 # push the data to a file
