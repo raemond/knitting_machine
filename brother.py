@@ -351,7 +351,7 @@ class brotherFile(object):
         print('patoff = 0x%04X' % int(patoff))
         print('rows = ', rows)
         print('stitches = ', stitches)
-        print('data[0]=',self.data[0],' of type ',type(self.data[0]))
+        #print('data[0]=',self.data[0],' of type ',type(self.data[0]))
         for i in range(0, rows):
             arow = self.getRowData(patoff, stitches, i)
             #print(':',arow,':')
